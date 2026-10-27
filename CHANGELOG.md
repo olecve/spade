@@ -6,6 +6,15 @@ can be ported to [dhleong/spade](https://github.com/dhleong/spade) on its own.
 
 ## Unreleased
 
+### Added
+
+- `spade.core/configure!` with `{:class-prefix "ui_"}` sets a prefix for every
+  class name and animation name Spade generates. It keeps the short names of an `:advanced`
+  build from colliding with other CSS on the same page. Call it before the first
+  style renders: a style now gets its name the first time it is used, not when
+  its namespace loads.
+  ([#11](https://github.com/olecve/spade/pull/11), not sent upstream yet)
+
 ### Changed
 
 - Published to Clojars as `org.clojars.olecve/spade` instead of

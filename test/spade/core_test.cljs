@@ -2,7 +2,7 @@
   (:require
    [cljs.test :refer-macros [deftest testing is]]
    [clojure.string :as str]
-   [spade.core :refer [defattrs defclass defglobal defkeyframes]]))
+   [spade.core :as spade :refer [defattrs defclass defglobal defkeyframes]]))
 
 ; for the linter's sake:
 (declare with-media-factory$
@@ -309,6 +309,18 @@
     (let [generated (:css (composes-from-var-and-map-factory$ "" []))]
       (is (false? (str/includes? generated "composes:")))
       (is (true? (str/includes? generated "background:"))))))
+
+(defclass defined-before-prefix []
+  {:color "red"})
+
+(deftest class-prefix-set-after-load-test
+  (testing "Use a class prefix that was set after the style was defined"
+    (spade/configure! {:class-prefix "late_"})
+    (try
+      (is (= "late_spade-core-test-defined-before-prefix"
+             (defined-before-prefix)))
+      (finally
+        (spade/configure! {:class-prefix ""})))))
 
 (defclass destructured [{:keys [c b]}]
   ^{:key (str c "_" b)}

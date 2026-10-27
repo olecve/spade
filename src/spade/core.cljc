@@ -188,7 +188,7 @@
 (defn- generate-style-name-fn [factory-fn-name factory-name-var style params]
   (cond
     (empty? params)
-    `(clojure.core/constantly ~factory-name-var)
+    `(fn [_#] @~factory-name-var)
 
     ; Custom :key meta; we need to generate the form to extract that.
     ; TODO: Ideally we can invoke the factory but *skip* CSS compilation,
@@ -199,16 +199,14 @@
       (fn [params#]
         (let [dry-run# (~factory-fn-name nil params#)]
           (#'build-style-name
-           ~factory-name-var
+           @~factory-name-var
            (::key dry-run#)
            params#))))
 
     :else
     `(clojure.core/memoize
-      (partial
-       #'build-style-name
-       ~factory-name-var
-       nil))))
+      (fn [params#]
+        (#'build-style-name @~factory-name-var nil params#)))))
 
 (defmulti ^:private declare-style
   (fn [mode _class-name params _name-fn-name _factory-fn-name]
@@ -292,15 +290,30 @@
                ~(transform-style mode style params style-name-var))
             (transform-style mode style nil style-name-var)))
 
-       (let [~factory-name-var (factory->name
-                                (macros/case
-                                 :cljs ~factory-fn-name
-                                 :clj (var ~factory-fn-name)))
+       (let [~factory-name-var (delay
+                                 (factory->name
+                                  (macros/case
+                                   :cljs ~factory-fn-name
+                                   :clj (var ~factory-fn-name))))
 
              ~style-name-fn-name ~(generate-style-name-fn
                                    factory-fn-name factory-name-var style params)]
 
          ~(declare-style mode class-name params style-name-fn-name factory-fn-name)))))
+
+#?(:clj
+   (defn configure!
+     "Sets options for the names Spade generates.
+
+     Options:
+     - `:class-prefix`, text that starts every class name and animation name. It
+       must start with a letter or `_`, and contain only letters, digits, `_` and
+       `-`. The default is no prefix.
+
+     Call it before the first style renders: a style gets its name the first time
+     it is used, and keeps it. Throws on an unknown option or an invalid value."
+     [options]
+     (spade.util/configure! options)))
 
 (defmacro defclass
   "Defines a function named `class-name` that returns the CSS class name of a style.
