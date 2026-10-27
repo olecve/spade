@@ -14,3 +14,8 @@ pom.xml.asc
 .repl
 .nrepl-port
 package.json
+
+# editor and tooling caches
+.clj-kondo/.cache/
+.lsp/.cache/
+node_modules/
