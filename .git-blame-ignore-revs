@@ -7,3 +7,6 @@
 
 # Put ns clauses on their own line
 3e10ba45286fb851fcf952c204b76e418eb3163f
+
+# Fix alignment left by the cljfmt reformat
+7897b594f118bd6589da8c0dd0db224ebbdb4216
