@@ -14,6 +14,14 @@ can be ported to [dhleong/spade](https://github.com/dhleong/spade) on its own.
 
 ### Fixed
 
+- The exported clj-kondo config tells clj-kondo what `defclass`, `defattrs` and
+  `defkeyframes` functions return: a class name, an attribute map and an
+  animation name. It used to lint them as `defn`, so clj-kondo 2026.10.20 and
+  newer read the style map as the return value, and `(:class (my-attrs))` got a
+  false "Unknown key :class" warning. The config also stops reporting
+  `at-supports`, `at-font-face` and `at-import` in these styles as unresolved
+  symbols. Before, only `at-media` was excluded.
+  ([#10](https://github.com/olecve/spade/pull/10), not sent upstream yet)
 - `:composes` works in any map at the top level of a style, also in a map that
   comes from a var or a function call. Before, Spade read it only from the first
   form, and only when that form was a map written in the style. A style that
