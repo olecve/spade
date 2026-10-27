@@ -4,11 +4,9 @@
 
 > [!NOTE]
 > This is the `stable/2.0.x` branch of [olecve/spade][fork], a fork of
-> [dhleong/spade][upstream]. It starts from the spade 2.0.0 release.
->
-> - `main` mirrors upstream `main` without changes.
-> - Fixes will be sent upstream as separate pull requests and cherry-picked
->   onto this branch.
+> [dhleong/spade][upstream]. It is spade 2.0.0 plus the changes listed in
+> [CHANGELOG.md](CHANGELOG.md). `main` mirrors upstream `main` without
+> changes.
 >
 > Nothing from this fork is published yet. Use `net.dhleong/spade`.
 
