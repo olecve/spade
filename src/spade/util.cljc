@@ -1,6 +1,14 @@
 (ns ^:no-doc spade.util
   (:require [clojure.string :as str]))
 
+(defonce ^:private factory-names (atom #{}))
+
+(defn- unique-factory-name [factory-name]
+  (let [[used] (swap-vals! factory-names conj factory-name)]
+    (if (contains? used factory-name)
+      (str factory-name "-" (gensym "SPD"))
+      factory-name)))
+
 (defn factory->name
   "Given a style factory function, return an appropriate name for its
    style. This function assumes it will be called *once* for any given
@@ -16,11 +24,17 @@
 
       ; normal case: base the style name on the factory function's name.
       ; this lets us have descriptive names in dev, and concise names in
-      ; prod, without having to embed anything extra in the file
-      (-> given-name
-          (str/replace #"[_-]factory\$" "")
-          (str/replace #"[_$]" "-")
-          (str/replace #"^-" "_")))))
+      ; prod, without having to embed anything extra in the file.
+      ; under :advanced optimizations, a factory can end up local to a
+      ; closure, and local names are minified separately in each scope,
+      ; so two different factories can have the same name. on the JVM,
+      ; the name has no namespace. so we make sure each factory still
+      ; gets its own name
+      (unique-factory-name
+        (-> given-name
+            (str/replace #"[_-]factory\$" "")
+            (str/replace #"[_$]" "-")
+            (str/replace #"^-" "_"))))))
 
 (defn sanitize [s]
   (-> s
