@@ -10,7 +10,7 @@
    [spade.util :refer [factory->name build-style-name]]))
 
 (defn- extract-key [style]
-  (:key (meta (first style))))
+  (-> style first meta :key))
 
 (defn- find-key-meta [style]
   (->> style
