@@ -23,26 +23,28 @@
        *style-container*))
 
 (defn with-style-container
-  "Uses the provided IStyleContainer to render the styles of the children
-   elements. This is a reagent-style React component, meant to wrap whatever
-   part of your app needs to have its styled rendered elsewhere (often the
-   root of the app), eg:
+  "Renders the styles of the children elements into `container`.
 
-     [with-style-container container
-      [your-view]]
+  This is a reagent-style React component, meant to wrap whatever part of
+  your app needs to have its styles rendered elsewhere (often the root of the
+  app), eg:
 
-   Note that behavior in the presence of a reactively changing `container` is
-   undefined. You should expect to declare one container per render."
+    [with-style-container container
+     [your-view]]
+
+  Note that behavior in the presence of a reactively changing `container` is
+  undefined. You should expect to declare one container per render."
   [^IStyleContainer container & children]
   (into [:> Provider {:value container}]
         children))
 
 (defn with-dom
   "A convenience for rendering Spade styles into an alternate dom target.
-   The first argument may either be an actual DOM element, or a function which
-   returns one.
 
-   See `with-style-container`, which this uses under the hood."
+  The first argument may either be an actual DOM element, or a function which
+  returns one.
+
+  See `with-style-container`, which this uses under the hood."
   [get-dom-target & _children]
   (let [container (dom/create-container get-dom-target)]
     (fn with-dom-render [_ & children]

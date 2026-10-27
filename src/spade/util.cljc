@@ -17,10 +17,11 @@
       factory-name)))
 
 (defn factory->name
-  "Given a style factory function, return an appropriate name for its
-   style. This function assumes it will be called *once* for any given
-   factory; subsequent calls for the same factory *may not* return the
-   same value (especially under :simple optimizations)."
+  "Returns an appropriate name for the style of a style factory function.
+
+  This function assumes it will be called *once* for any given factory;
+  subsequent calls for the same factory *may not* return the same value
+  (especially under :simple optimizations)."
   [factory]
   (let [given-name #?(:cljs (.-name factory)
                       :clj (-> factory meta :name str))]
