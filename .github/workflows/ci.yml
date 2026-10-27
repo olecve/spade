@@ -35,11 +35,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2-
 
-      - name: Format
-        run: lein cljfmt check
-
       - name: Test
         run: lein test
 
       - name: Lint
+        if: ${{ !cancelled() }}
         run: clj-kondo --lint src --config .clj-kondo/config.edn
+
+      - name: Format
+        if: ${{ !cancelled() }}
+        run: lein cljfmt check
