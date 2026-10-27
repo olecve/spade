@@ -3,10 +3,12 @@
 
 (defonce ^:private factory-names (atom #{}))
 
-; different factories can get the same name: under :advanced
-; optimizations, names local to a closure are minified per scope,
-; and on the JVM the name has no namespace
-(defn- unique-factory-name [factory-name]
+(defn- unique-factory-name
+  "Return `factory-name`, or a variant of it with a generated suffix if
+   another factory already got that name. Different factories can get the
+   same name: under :advanced optimizations, names local to a closure are
+   minified per scope, and on the JVM the name has no namespace."
+  [factory-name]
   (let [[used] (swap-vals! factory-names conj factory-name)]
     (if (contains? used factory-name)
       (str factory-name "-" (gensym "SPD"))
@@ -28,11 +30,11 @@
       ; normal case: base the style name on the factory function's name.
       ; this lets us have descriptive names in dev, and concise names in
       ; prod, without having to embed anything extra in the file
-      (unique-factory-name
-        (-> given-name
-            (str/replace #"[_-]factory\$" "")
-            (str/replace #"[_$]" "-")
-            (str/replace #"^-" "_"))))))
+      (-> given-name
+          (str/replace #"[_-]factory\$" "")
+          (str/replace #"[_$]" "-")
+          (str/replace #"^-" "_")
+          unique-factory-name))))
 
 (defn sanitize [s]
   (-> s
