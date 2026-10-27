@@ -94,7 +94,7 @@
              [cider.piggieback/wrap-cljs-repl cider.nrepl/cider-middleware]}
 
   :profiles {:clj-kondo {:dependencies ^:replace [[org.clojure/clojure "1.12.0"]
-                                                 [clj-kondo "2026.08.04"]]}
+                                                 [clj-kondo "2026.10.26"]]}
 
              :dev {:dependencies [[binaryage/devtools "0.9.10"]
                                   [figwheel-sidecar "0.5.19"]
