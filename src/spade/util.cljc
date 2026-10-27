@@ -4,10 +4,11 @@
 (defonce ^:private factory-names (atom #{}))
 
 (defn- unique-factory-name
-  "Return `factory-name`, or a variant of it with a generated suffix if
-   another factory already got that name. Different factories can get the
-   same name: under :advanced optimizations, names local to a closure are
-   minified per scope, and on the JVM the name has no namespace."
+  "Returns `factory-name`, or a suffixed variant if another factory has it.
+
+  Different factories can get the same name. Under :advanced optimizations,
+  names local to a closure are minified per scope. On the JVM, the name has
+  no namespace."
   [factory-name]
   (let [[used] (swap-vals! factory-names conj factory-name)]
     (if (contains? used factory-name)
