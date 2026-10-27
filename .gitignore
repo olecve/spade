@@ -17,5 +17,7 @@ package.json
 
 # editor and tooling caches
 .clj-kondo/.cache/
+.clj-kondo/imports/
+.cpcache/
 .lsp/.cache/
 node_modules/
