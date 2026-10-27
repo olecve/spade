@@ -30,3 +30,23 @@
              (get @styles a-name)))
       (is (= (str "." b-name "{color:navy}")
              (get @styles b-name))))))
+
+(defclass red-class []
+  {:color "red"})
+
+(defn- shared-with-composes []
+  {:composes [(red-class)]})
+
+(defclass composes-from-call []
+  (shared-with-composes)
+  {:background "blue"})
+
+(deftest composes-from-a-function-call-test
+  (testing "Compose from a map that a function call returns"
+    (let [styles (atom nil)
+          container (atom-container/create-container styles)
+          style-name (with-styles-container container
+                       (composes-from-call))]
+      (is (= "red-class composes-from-call" style-name))
+      (is (= ".composes-from-call{background:blue}"
+             (get @styles "composes-from-call"))))))

@@ -11,6 +11,10 @@
          composed-factory$
          composed-list-factory$
          composed-attrs-factory$
+         composes-after-shared-map-factory$
+         composes-in-two-maps-factory$
+         composes-from-var-factory$
+         composes-from-var-and-map-factory$
          parameterized-key-frames-factory$)
 
 (defclass computed-key [color]
@@ -227,6 +231,71 @@
                                  "composes:")))
       (is (true? (str/includes? generated
                                 "background:"))))))
+
+(def ^:private min-size
+  {:min-height "24px"})
+
+(defclass composes-after-shared-map []
+  min-size
+  {:composes [(params "red")]
+   :background "blue"})
+
+(defclass composes-in-two-maps []
+  {:composes (params "red")}
+  {:composes [(params "blue")]
+   :background "blue"})
+
+(deftest composes-in-a-later-map-test
+  (testing "compose from a map that is not the first form"
+    (is (= [(str "spade-core-test-params_" (hash ["red"]))
+            "spade-core-test-composes-after-shared-map"]
+           (str/split (composes-after-shared-map) #" ")))
+
+    (let [generated (:css (composes-after-shared-map-factory$ "" []))]
+      (is (false? (str/includes? generated "composes:")))
+      (is (true? (str/includes? generated "min-height:")))
+      (is (true? (str/includes? generated "background:")))))
+
+  (testing "compose from every map that has :composes, in order"
+    (is (= [(str "spade-core-test-params_" (hash ["red"]))
+            (str "spade-core-test-params_" (hash ["blue"]))
+            "spade-core-test-composes-in-two-maps"]
+           (str/split (composes-in-two-maps) #" ")))
+
+    (let [generated (:css (composes-in-two-maps-factory$ "" []))]
+      (is (false? (str/includes? generated "composes:"))))))
+
+(def ^:private shared-with-composes
+  {:composes [(params "red")]})
+
+(defclass composes-from-var []
+  shared-with-composes
+  {:color "red"})
+
+(defclass composes-from-var-and-map []
+  shared-with-composes
+  {:composes [(params "blue")]
+   :background "blue"})
+
+(deftest composes-from-a-var-test
+  (testing "compose from a map that comes from a var"
+    (is (= [(str "spade-core-test-params_" (hash ["red"]))
+            "spade-core-test-composes-from-var"]
+           (str/split (composes-from-var) #" ")))
+
+    (let [generated (:css (composes-from-var-factory$ "" []))]
+      (is (false? (str/includes? generated "composes:")))
+      (is (true? (str/includes? generated "color:")))))
+
+  (testing "compose from a var and a map written in the style, in order"
+    (is (= [(str "spade-core-test-params_" (hash ["red"]))
+            (str "spade-core-test-params_" (hash ["blue"]))
+            "spade-core-test-composes-from-var-and-map"]
+           (str/split (composes-from-var-and-map) #" ")))
+
+    (let [generated (:css (composes-from-var-and-map-factory$ "" []))]
+      (is (false? (str/includes? generated "composes:")))
+      (is (true? (str/includes? generated "background:"))))))
 
 (defclass destructured [{:keys [c b]}]
   ^{:key (str c "_" b)}
