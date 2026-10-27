@@ -1,6 +1,7 @@
 (ns spade.util-test
-  (:require [cljs.test :refer-macros [deftest testing is]]
-            [spade.util :refer [factory->name]]))
+  (:require
+   [cljs.test :refer-macros [deftest testing is]]
+   [spade.util :refer [factory->name]]))
 
 (deftest factory->name-test
   (testing "Never prefix with illegal characters"
@@ -21,4 +22,3 @@
           second-name (factory->name #js {:name "sameName"})]
       (is (= "sameName" first-name))
       (is (not= first-name second-name)))))
-

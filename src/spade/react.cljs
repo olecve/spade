@@ -1,9 +1,10 @@
 (ns spade.react
-  (:require [react :as react]
-            [spade.container :refer [IStyleContainer]]
-            [spade.container.alternate :refer [->AlternateStyleContainer]]
-            [spade.container.dom :as dom]
-            [spade.runtime :refer [*style-container*]]))
+  (:require
+   [react :as react]
+   [spade.container :refer [IStyleContainer]]
+   [spade.container.alternate :refer [->AlternateStyleContainer]]
+   [spade.container.dom :as dom]
+   [spade.runtime :refer [*style-container*]]))
 
 (defonce context (react/createContext nil))
 (defonce Provider (.-Provider context))
@@ -18,8 +19,8 @@
 ;; to also check the react context
 (set! *style-container*
       (->AlternateStyleContainer
-        provided-container
-        *style-container*))
+       provided-container
+       *style-container*))
 
 (defn with-style-container
   "Uses the provided IStyleContainer to render the styles of the children

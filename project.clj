@@ -11,8 +11,12 @@
                  [garden "1.3.10"]
                  [net.cgrand/macrovich "0.2.1"]]
 
-  :plugins [[lein-figwheel "0.5.19"]
+  :plugins [[dev.weavejester/lein-cljfmt "0.16.4"]
+            [lein-figwheel "0.5.19"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
+
+  :cljfmt {:load-config-file? true
+           :paths ["src" "test" "dev" "resources/clj-kondo.exports"]}
 
   :doo {:paths {:karma "./node_modules/karma/bin/karma"}}
 

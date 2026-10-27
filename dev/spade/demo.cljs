@@ -1,8 +1,9 @@
 (ns spade.demo
-  (:require [clojure.string :as str]
-            [reagent.dom :as rdom]
-            [spade.core :refer [defclass defattrs defglobal defkeyframes]]
-            [spade.react :as spade]))
+  (:require
+   [clojure.string :as str]
+   [reagent.dom :as rdom]
+   [spade.core :refer [defclass defattrs defglobal defkeyframes]]
+   [spade.react :as spade]))
 
 (defkeyframes anim-frames []
   ["0%" {:opacity 0}]
@@ -21,7 +22,7 @@
 
 (defclass serenity []
   (at-media {:min-width "750px"}
-    {:padding "80px"})
+            {:padding "80px"})
   {:padding "8px"}
 
   [:.title {:font-size :*my-var*
@@ -83,12 +84,11 @@
 
 (defn mount-root []
   (rdom/render
-    [spade/with-dom #(.getElementById js/document "styles")
-     [view]]
-    (.getElementById js/document "app")))
+   [spade/with-dom #(.getElementById js/document "styles")
+    [view]]
+   (.getElementById js/document "app")))
 
-(defn init!  []
+(defn init! []
   (mount-root))
 
 (init!)
-

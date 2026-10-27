@@ -1,5 +1,6 @@
 (ns ^:no-doc spade.util
-  (:require [clojure.string :as str]))
+  (:require
+   [clojure.string :as str]))
 
 (defonce ^:private factory-names (atom #{}))
 

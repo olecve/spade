@@ -1,7 +1,8 @@
 (ns spade.core-test
-  (:require [cljs.test :refer-macros [deftest testing is]]
-            [clojure.string :as str]
-            [spade.core :refer [defattrs defclass defglobal defkeyframes]]))
+  (:require
+   [cljs.test :refer-macros [deftest testing is]]
+   [clojure.string :as str]
+   [spade.core :refer [defattrs defclass defglobal defkeyframes]]))
 
 ; for the linter's sake:
 (declare with-media-factory$
@@ -27,8 +28,8 @@
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defclass with-media []
   (at-media {:max-width "50px"}
-    {:background "blue"}
-    [:.nested {:background "red"}]))
+            {:background "blue"}
+            [:.nested {:background "red"}]))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defclass class-with-vars []
@@ -56,25 +57,24 @@
                         :css
                         (str/replace #"\s+" " "))]
       (is (str/includes?
-            generated
-            (str "@media (max-width: 50px) { "
-                 ".with-media { background: blue; } "
-                 ".with-media .nested { background: red; }")))))
+           generated
+           (str "@media (max-width: 50px) { "
+                ".with-media { background: blue; } "
+                ".with-media .nested { background: red; }")))))
 
   (testing "CSS var declaration and usage"
     (let [generated (-> (class-with-vars-factory$ "class-with-vars" [])
                         :css
                         (str/replace #"\s+" " "))]
       (is (str/includes?
-            generated
-            (str ".class-with-vars {"
-                 " --my-var: 42pt;"
-                 " --spade-core-test--namespaced: blue;"
-                 " font-size: var(--my-var);"
-                 " background: var(--spade-core-test--namespaced);"
-                 " color: var(--my-var) !important;"
-                 " }"))))))
-
+           generated
+           (str ".class-with-vars {"
+                " --my-var: 42pt;"
+                " --spade-core-test--namespaced: blue;"
+                " font-size: var(--my-var);"
+                " background: var(--spade-core-test--namespaced);"
+                " color: var(--my-var) !important;"
+                " }"))))))
 
 (defattrs fixed-style-attrs []
   {:*my-var* "blue"
@@ -90,12 +90,11 @@
                         :css
                         (str/replace #"\s+" " "))]
       (is (str/includes?
-            generated
-            (str ".with-vars {"
-                 " --my-var: blue;"
-                 " color: var(--my-var);"
-                 " }"))))))
-
+           generated
+           (str ".with-vars {"
+                " --my-var: blue;"
+                " color: var(--my-var);"
+                " }"))))))
 
 (defglobal global-1
   [":root" {:*background* "blue"}]
@@ -103,7 +102,7 @@
 
 (defglobal global-2
   (at-media {:min-width "42px"}
-    [:body {:background "white"}]))
+            [:body {:background "white"}]))
 
 (deftest defglobal-test
   (testing "Declare const var with style from global"
@@ -114,9 +113,8 @@
 
   (testing "Support at-media automatically"
     (is (str/starts-with?
-          global-2
-          "@media (min-width: 42px) {"))))
-
+         global-2
+         "@media (min-width: 42px) {"))))
 
 (defkeyframes key-frames []
   [:from {:opacity 0}])
@@ -138,15 +136,15 @@
 
   (testing "CSS var declaration and usage"
     (let [generated (-> (parameterized-key-frames-factory$
-                          "with-vars" [42])
+                         "with-vars" [42])
                         :css
                         (str/replace #"\s+" " "))]
       (is (str/includes?
-            generated
-            (str "from {"
-                 " --spade-core-test--from: 42;"
-                 " opacity: var(--spade-core-test--from);"
-                 " }"))))))
+           generated
+           (str "from {"
+                " --spade-core-test--from: 42;"
+                " opacity: var(--spade-core-test--from);"
+                " }"))))))
 
 (defclass composed [color]
   ^{:key color}
@@ -156,8 +154,8 @@
 (deftest defclass-compose-test
   (testing "Composing should not break :key naming"
     (let [generated (composed-factory$ "" ["blue"])]
-      (= "blue"
-          (:spade.core/key generated))))
+      (is (= "blue"
+             (:spade.core/key generated)))))
 
   (testing "computed-key test"
     (is (= "spade-core-test-computed-key_BLUE spade-core-test-composed_blue"
@@ -186,12 +184,11 @@
 
     (let [generated (:css (composed-list-factory$ "" ["blue"]))]
       (is (false? (str/includes? generated
-                                "color:")))
+                                 "color:")))
       (is (false? (str/includes? generated
-                                "composes:")))
+                                 "composes:")))
       (is (true? (str/includes? generated
                                 "background:"))))))
-
 
 (defattrs composed-attrs [color]
   ^{:key color}
@@ -252,7 +249,8 @@
 (deftest destructuring-factory-test
   (testing "Destructure args"
     (is (= "spade-core-test-destructured_blue_red"
-           (destructured {:c "blue" :b "red"}))))
+           (destructured {:c "blue"
+                          :b "red"}))))
 
   (testing "Don't barf on Variadic args"
     (is (= "spade-core-test-variadic_cyanmagentayellow"

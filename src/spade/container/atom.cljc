@@ -1,6 +1,7 @@
 (ns spade.container.atom
   "The AtomStyleContainer renders styles into an atom it is provided with."
-  (:require [spade.container :refer [IStyleContainer]]))
+  (:require
+   [spade.container :refer [IStyleContainer]]))
 
 (deftype AtomStyleContainer [styles-atom info-atom]
   IStyleContainer

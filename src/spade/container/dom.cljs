@@ -3,7 +3,8 @@
    elements are stored in a `styles` atom, or `*injected-styles*` if that is
    not provided. Similarly, if no `target-dom` is provided, the `document.head`
    element is used."
-  (:require [spade.container :refer [IStyleContainer]]))
+  (:require
+   [spade.container :refer [IStyleContainer]]))
 
 (defonce ^:dynamic *injected-styles* (atom nil))
 
