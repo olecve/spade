@@ -21,4 +21,3 @@ package.json
 .cpcache/
 .lsp/.cache/
 node_modules/
-.cache/
