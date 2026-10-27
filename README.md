@@ -233,6 +233,27 @@ The above example will generate the following CSS:
 
 Note that [CSS Custom Properties are not supported on all browsers][4], and this syntax compiles to that feature directly without any attempt at backwards compatibility—if CSS Custom Properties are not supported on a browser you are targetting, this syntax will also not be supported.
 
+### Class name prefix
+
+Spade builds class names and animation names from the names of your style
+functions. Under `:advanced` optimizations these are short minified names, such
+as `dF`, which can collide with other CSS on the same page. Set a prefix that
+starts every name Spade generates:
+
+```clojure
+(ns my-app.core
+  (:require [spade.core :as spade]))
+
+(defn init []
+  (spade/configure! {:class-prefix "ui_"})
+  (render-app))
+```
+
+Call it before the first style renders. A style gets its name the first time it
+is used, and keeps it. The prefix must start with a letter or `_`, and contain
+only letters, digits, `_` and `-`. `configure!` throws an error for any other
+prefix, and for an option it doesn't know. The default is no prefix.
+
 ## Development
 
 To get an interactive development environment run:
