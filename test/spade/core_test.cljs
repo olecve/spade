@@ -6,6 +6,7 @@
 
 ; for the linter's sake:
 (declare with-media-factory$
+         with-supports-factory$
          class-with-vars-factory$
          fixed-style-attrs-factory$
          composed-factory$
@@ -34,6 +35,12 @@
   (at-media {:max-width "50px"}
             {:background "blue"}
             [:.nested {:background "red"}]))
+
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
+(defclass with-supports []
+  {:display :block}
+  (at-supports {:display :grid}
+               [:& {:display :grid}]))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defclass class-with-vars []
@@ -65,6 +72,14 @@
            (str "@media (max-width: 50px) { "
                 ".with-media { background: blue; } "
                 ".with-media .nested { background: red; }")))))
+
+  (testing "@supports generation"
+    (let [generated (-> (with-supports-factory$ "with-supports" [])
+                        :css
+                        (str/replace #"\s+" " "))]
+      (is (str/includes?
+           generated
+           "@supports (display: grid) { .with-supports { display: grid; }"))))
 
   (testing "CSS var declaration and usage"
     (let [generated (-> (class-with-vars-factory$ "class-with-vars" [])
@@ -206,8 +221,6 @@
 (deftest defattrs-compose-test
   (testing "computed-key test"
     (is (= "spade-core-test-computed-key_BLUE spade-core-test-composed-attrs_blue"
-           ;; clj-kondo reads the style map as the return value of a defattrs
-           #_{:clj-kondo/ignore [:unknown-map-key]}
            (:class (composed-attrs "blue"))))
 
     (let [generated (:css (composed-attrs-factory$ "" ["blue"]))]
