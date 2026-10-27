@@ -1,10 +1,13 @@
 (ns spade.core
-  #?(:cljs (:require-macros [net.cgrand.macrovich :as macros]))
-  (:require #?@(:clj [[net.cgrand.macrovich :as macros]
-                      [spade.runtime]])
-            [clojure.string :as str]
-            [clojure.walk :refer [postwalk prewalk]]
-            [spade.util :refer [factory->name build-style-name]]))
+  #?(:cljs
+     (:require-macros
+      [net.cgrand.macrovich :as macros]))
+  (:require
+   #?@(:clj [[net.cgrand.macrovich :as macros]
+             [spade.runtime]])
+   [clojure.string :as str]
+   [clojure.walk :refer [postwalk prewalk]]
+   [spade.util :refer [factory->name build-style-name]]))
 
 (defn- extract-key [style]
   (:key (meta (first style))))

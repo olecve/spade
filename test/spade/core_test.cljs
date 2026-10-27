@@ -1,7 +1,8 @@
 (ns spade.core-test
-  (:require [cljs.test :refer-macros [deftest testing is]]
-            [clojure.string :as str]
-            [spade.core :refer [defattrs defclass defglobal defkeyframes]]))
+  (:require
+   [cljs.test :refer-macros [deftest testing is]]
+   [clojure.string :as str]
+   [spade.core :refer [defattrs defclass defglobal defkeyframes]]))
 
 ; for the linter's sake:
 (declare with-media-factory$

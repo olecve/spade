@@ -1,8 +1,9 @@
 (ns spade.demo
-  (:require [clojure.string :as str]
-            [reagent.dom :as rdom]
-            [spade.core :refer [defclass defattrs defglobal defkeyframes]]
-            [spade.react :as spade]))
+  (:require
+   [clojure.string :as str]
+   [reagent.dom :as rdom]
+   [spade.core :refer [defclass defattrs defglobal defkeyframes]]
+   [spade.react :as spade]))
 
 (defkeyframes anim-frames []
   ["0%" {:opacity 0}]

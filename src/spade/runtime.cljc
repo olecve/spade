@@ -1,9 +1,10 @@
 (ns spade.runtime
-  (:require [clojure.string :as str]
-            [garden.core :as garden]
-            [garden.types :refer [->CSSFunction]]
-            [spade.container :as sc]
-            [spade.runtime.defaults :as defaults]))
+  (:require
+   [clojure.string :as str]
+   [garden.core :as garden]
+   [garden.types :refer [->CSSFunction]]
+   [spade.container :as sc]
+   [spade.runtime.defaults :as defaults]))
 
 (defonce ^:dynamic *css-compile-flags*
   {:pretty-print? #? (:cljs goog.DEBUG

@@ -1,7 +1,8 @@
 (ns spade.container.alternate
   "The AlternateStyleContainer may be used when a preferred container
    is not always available."
-  (:require [spade.container :as sc :refer [IStyleContainer]]))
+  (:require
+   [spade.container :as sc :refer [IStyleContainer]]))
 
 (deftype AlternateStyleContainer [get-preferred fallback]
   IStyleContainer

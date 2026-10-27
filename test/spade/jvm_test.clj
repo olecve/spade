@@ -1,9 +1,10 @@
 (ns spade.jvm-test
-  (:require [clojure.test :refer [deftest is testing]]
-            [spade.collision.a :as a]
-            [spade.collision.b :as b]
-            [spade.container.atom :as atom-container]
-            [spade.core :refer [defclass with-styles-container]]))
+  (:require
+   [clojure.test :refer [deftest is testing]]
+   [spade.collision.a :as a]
+   [spade.collision.b :as b]
+   [spade.container.atom :as atom-container]
+   [spade.core :refer [defclass with-styles-container]]))
 
 (defclass blue-class []
   {:color "blue"})
