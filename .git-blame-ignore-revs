@@ -4,3 +4,6 @@
 
 # Format the code with cljfmt
 0a62958b8903970f66f147a7602da35588f7fd4d
+
+# Put ns clauses on their own line
+3e10ba45286fb851fcf952c204b76e418eb3163f
