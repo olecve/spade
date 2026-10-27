@@ -2,6 +2,27 @@
   (:require
    [clojure.string :as str]))
 
+(defonce ^:private class-prefix (atom ""))
+
+(def ^:private known-options #{:class-prefix})
+
+(defn configure!
+  "Checks `options` and applies them, as [[spade.core/configure!]] documents."
+  [options]
+  (when-let [unknown (seq (remove known-options (keys options)))]
+    (throw (ex-info (str "Unknown option: " (str/join ", " unknown))
+                    {:unknown-options (vec unknown)})))
+  (when (contains? options :class-prefix)
+    (let [prefix (:class-prefix options)]
+      (when-not (and (string? prefix)
+                     (re-matches #"(?:[A-Za-z_][A-Za-z0-9_-]*)?" prefix))
+        (throw (ex-info (str "Invalid class prefix: " (pr-str prefix))
+                        {:class-prefix prefix})))
+      (reset! class-prefix prefix))))
+
+(defn- prefixed [style-name]
+  (str @class-prefix style-name))
+
 (defonce ^:private factory-names (atom #{}))
 
 (defn- unique-factory-name
@@ -19,17 +40,18 @@
 (defn factory->name
   "Returns the CSS class name for the style of a style factory function.
 
-  The class name comes from the name of the function. Under :simple
-  optimizations the function has no name, so the class name is generated.
-  Call this function once for each factory. A second call for the same factory
-  returns a different name."
+  The class name is the `:class-prefix` from [[configure!]] followed by the
+  name of the function.
+  Under :simple optimizations the function has no name, so the name is
+  generated. Call this function once for each factory. A second call for the
+  same factory returns a different name."
   [factory]
   (let [given-name #?(:cljs (.-name factory)
                       :clj (-> factory meta :name str))]
     (if (empty? given-name)
       ; under :simple optimizations, the way the function is declared does
       ; not leave any value for its name. so... generate one!
-      (name (gensym "SPD"))
+      (prefixed (name (gensym "SPD")))
 
       ; normal case: base the style name on the factory function's name.
       ; this lets us have descriptive names in dev, and concise names in
@@ -38,6 +60,7 @@
           (str/replace #"[_-]factory\$" "")
           (str/replace #"[_$]" "-")
           (str/replace #"^-" "_")
+          prefixed
           unique-factory-name))))
 
 (defn sanitize [s]
