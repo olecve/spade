@@ -1,14 +1,12 @@
 (ns spade.container)
 
 (defprotocol IStyleContainer
-  "The IStyleContainer represents anything that can be used by Spade to
-   'mount' styles for access by Spade style components."
+  "A place where Spade mounts the CSS of its styles."
   (mounted-info
     [this style-name]
-    "Given a style-name, return the info object that was passed when style-name
-     was mounted, or nil if that style is not currently mounted.")
+    "Returns the `info` mounted with `style-name`, or nil if that style is not mounted.")
   (mount-style!
     [this style-name css info]
-    "Ensure the style with the given name and CSS is available. [info]
-     should be stored somewhere in-memory to be quickly retrieved
-     by a call to [mounted-info]."))
+    "Makes the style named `style-name` with the given `css` available.
+
+    Keep `info` in memory, so that [[mounted-info]] can return it quickly."))

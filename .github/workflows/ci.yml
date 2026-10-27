@@ -20,10 +20,6 @@ jobs:
         with:
           node-version: 22
 
-      - uses: DeLaGuardo/setup-clj-kondo@master
-        with:
-          version: "2026.05.25"
-
       - uses: DeLaGuardo/setup-clojure@master
         with:
           lein: latest
@@ -40,7 +36,7 @@ jobs:
 
       - name: Lint
         if: ${{ !cancelled() }}
-        run: clj-kondo --lint src test --config .clj-kondo/config.edn
+        run: lein clj-kondo
 
       - name: Format
         if: ${{ !cancelled() }}

@@ -1,8 +1,9 @@
 (ns spade.container.dom
-  "The DomStyleContainer renders styles into DOM elements. References to those
-   elements are stored in a `styles` atom, or `*injected-styles*` if that is
-   not provided. Similarly, if no `target-dom` is provided, the `document.head`
-   element is used."
+  "A style container that renders styles into `<style>` elements in the DOM.
+
+  It keeps references to those elements in the `styles` atom, or in
+  `*injected-styles*` when there is no `styles` atom. It adds the elements to
+  `target-dom`, or to `document.head` when there is no `target-dom`."
   (:require
    [spade.container :refer [IStyleContainer]]))
 
@@ -53,14 +54,16 @@
           (inject! resolved-dom resolved-container style-name css info))))))
 
 (defn create-container
-  "Create a DomStyleContainer. With no args, the default is created, which
-   renders into the `document.head` element. For rendering into a custom
-   target, such as when using Shadow DOM, you may provide a custom
-   `target-dom`: this may either be the element itself, or a function which
-   returns that element.
+  "Creates a DomStyleContainer.
 
-   If you also wish to provide your own storage for the style references, you
-   may use the 3-arity version and provide an atom."
+  With no arguments, it renders into `document.head` and keeps the style
+  references in `*injected-styles*`. To render into another element, for
+  example in a Shadow DOM, pass `target-dom`. It can be the element or a
+  function that returns the element. The container then keeps the style
+  references in a new atom.
+
+  To keep the style references in your own atom, pass it as the second
+  argument."
   ([] (create-container nil))
   ([target-dom] (create-container target-dom (when target-dom
                                                (atom nil))))

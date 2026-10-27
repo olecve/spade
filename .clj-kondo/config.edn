@@ -1,8 +1,18 @@
-{:linters {:unresolved-symbol {:exclude [goog.DEBUG
-                                         (com.rpl.specter/recursive-path)]}}
- :lint-as {applied-science.js-interop/defn clojure.core/defn
-           applied-science.js-interop/let clojure.core/let
-           applied-science.js-interop/fn clojure.core/fn
-           reagent.core/with-let clojure.core/let}
+{:linters {:docstring-blank {:level :error}
+           :docstring-leading-trailing-whitespace {:level :error}
+           :docstring-no-summary {:level :error}
+           :misplaced-docstring {:level :error}
+           :discouraged-var {:level :error
+                             cljs.core/prn {:message "prn usage is forbidden"}
+                             cljs.core/print {:message "print usage is forbidden"}
+                             cljs.core/println {:message "println usage is forbidden"}
+                             clojure.core/tap> {:level :info}}
+           :equals-expected-position {:level :error
+                                      :only-in-test-assertion true}
+           :line-length {:max-line-length 129
+                         :level :error}
+           :redundant-fn-wrapper {:level :error}
+           :redundant-nested-call {:level :error}
+           :redundant-str-call {:level :error}
+           :unresolved-symbol {:exclude [goog.DEBUG]}}
  :config-paths ["../resources/clj-kondo.exports/net.dhleong/spade"]}
-

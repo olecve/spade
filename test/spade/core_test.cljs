@@ -202,6 +202,8 @@
 (deftest defattrs-compose-test
   (testing "computed-key test"
     (is (= "spade-core-test-computed-key_BLUE spade-core-test-composed-attrs_blue"
+           ;; clj-kondo reads the style map as the return value of a defattrs
+           #_{:clj-kondo/ignore [:unknown-map-key]}
            (:class (composed-attrs "blue"))))
 
     (let [generated (:css (composed-attrs-factory$ "" ["blue"]))]
