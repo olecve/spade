@@ -313,24 +313,21 @@
          ~(declare-style mode class-name params style-name-fn-name factory-fn-name)))))
 
 (defmacro defclass
-  "Defines a CSS module function named `class-name` that accepts `params`.
+  "Defines a function named `class-name` that returns the CSS class name of a style.
 
-  For example:
+  `params` are the parameters of the function, and the style can use them:
 
       (defclass ship-style [wing-color]
         {:background \"#999\"}
         [:.wing {:color wing-color}])
 
-  Notice how we can return multiple statements from `defclass`. The first map
-  applies to whatever element gets the class, and the rest are used for its
-  descendents. The above translates directly to garden syntax as:
+  The first map applies to the element that gets the class. The other forms
+  apply to its descendants. In garden syntax, the example is:
 
       [:.ship-style {:background \"#999\"}
-       [:.wing {:background wing-color}]]
+       [:.wing {:color wing-color}]]
 
-  Calling the `ship-style` function declared here returns a string containing
-  the CSS class name that refers to the style created. In reagent, you might
-  use it like this:
+  Use the class name in a reagent component:
 
       (defn ship [wing-color]
         [:div {:class (ship-style wing-color)}
@@ -339,15 +336,13 @@
   (declare-style-fns :class class-name params style))
 
 (defmacro defattrs
-  "Declares a CSS module function that returns an attribute map.
+  "Defines a function named `class-name` that returns an attribute map for a style.
 
-  The usage is identical to [[defclass]], but instead of returning the class
-  name directly, functions declared using defattrs will return an attribute
-  map, eg:
+  It works like [[defclass]], but the function returns a map such as:
 
       {:class \"the-class-name\"}
 
-  A `defattrs` function can then be used simply in a reagent component as:
+  Use the map as the attributes of a reagent element:
 
       (defn ship [wing-color]
         [:div (ship-attrs wing-color)
@@ -356,21 +351,19 @@
   (declare-style-fns :attrs class-name params style))
 
 (defmacro defglobal
-  "Declares a global style with the name `group-name`.
+  "Defines a global style named `group-name`.
 
-  The style declaration is similar to that of [[defattrs]] or [[defclass]] in
-  that you can declare multiple styles at once, but since these styles apply
-  globally, and can go on elements like `<body>`, the style is injected when
-  evaluated, and so cannot accept parameters."
+  Like [[defclass]] and [[defattrs]], it can contain more than one style. The
+  styles apply globally, also to elements such as `<body>`. Spade adds the
+  styles when the form is evaluated, so a global style cannot take parameters."
   [group-name & style]
   (declare-style-fns :global group-name nil style))
 
 (defmacro defkeyframes
-  "Declares an `@keyframes` CSS module function.
+  "Defines a function named `keyframes-name` that returns the name of an `@keyframes` animation.
 
-  Like [[defclass]], you can accept parameters here to be able to dynamically
-  generate keyframes. The return value of the declared function is the
-  animation identifier, and can be used like:
+  Like [[defclass]], it can take parameters to generate the keyframes. Use the
+  returned name in an `:animation` property:
 
       (defkeyframes anim-frames []
         [\"0%\" {:opacity 0}]

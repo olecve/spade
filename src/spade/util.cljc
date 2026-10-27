@@ -5,11 +5,11 @@
 (defonce ^:private factory-names (atom #{}))
 
 (defn- unique-factory-name
-  "Returns `factory-name`, or a suffixed variant if another factory has it.
+  "Returns `factory-name`, or `factory-name` with a generated suffix if it is taken.
 
-  Different factories can get the same name. Under :advanced optimizations,
-  names local to a closure are minified per scope. On the JVM, the name has
-  no namespace."
+  Two different factories can get the same name. Under :advanced
+  optimizations, names that are local to a closure are minified separately in
+  each scope. On the JVM, the name does not include the namespace."
   [factory-name]
   (let [[used] (swap-vals! factory-names conj factory-name)]
     (if (contains? used factory-name)
@@ -17,11 +17,12 @@
       factory-name)))
 
 (defn factory->name
-  "Returns an appropriate name for the style of a style factory function.
+  "Returns the CSS class name for the style of a style factory function.
 
-  This function assumes it will be called *once* for any given factory;
-  subsequent calls for the same factory *may not* return the same value
-  (especially under :simple optimizations)."
+  The class name comes from the name of the function. Under :simple
+  optimizations the function has no name, so the class name is generated.
+  Call this function once for each factory. A second call for the same factory
+  returns a different name."
   [factory]
   (let [given-name #?(:cljs (.-name factory)
                       :clj (-> factory meta :name str))]
