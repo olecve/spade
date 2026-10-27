@@ -40,7 +40,7 @@ jobs:
 
       - name: Lint
         if: ${{ !cancelled() }}
-        run: clj-kondo --lint src --config .clj-kondo/config.edn
+        run: clj-kondo --lint src test --config .clj-kondo/config.edn
 
       - name: Format
         if: ${{ !cancelled() }}
