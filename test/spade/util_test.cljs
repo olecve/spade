@@ -18,5 +18,13 @@
     ; simulate two fns under advanced compilation whose
     ; minified names only differ by `$` and `_`
     (is (not= (factory->name #js {:name "$collide"})
-              (factory->name #js {:name "_collide"})))))
+              (factory->name #js {:name "_collide"}))))
+
+  (testing "Keep the name of the first factory when names are the same"
+    ; simulate two fns that end up with the same minified
+    ; name, as can happen in a very large advanced build
+    (let [first-name (factory->name #js {:name "sameName"})
+          second-name (factory->name #js {:name "sameName"})]
+      (is (= "sameName" first-name))
+      (is (not= first-name second-name)))))
 
