@@ -29,7 +29,14 @@
   :jar-exclusions [#"(?:^|\/)public\/"]
 
   :aliases {"test" ["do" "test"
-                    ["doo" "chrome-headless" "test" "once"]]}
+                    ["doo" "chrome-headless" "test" "once"]]
+            "lint" ["do"
+                    ["cljfmt" "check"]
+                    ["clj-kondo"]]
+            "clj-kondo" ["with-profile" "clj-kondo" "run"
+                         "-m" "clj-kondo.main"
+                         "--parallel"
+                         "--lint" "src" "test"]}
 
   :cljsbuild {:builds
               [{:id "dev"
@@ -86,7 +93,10 @@
              :nrepl-middleware
              [cider.piggieback/wrap-cljs-repl cider.nrepl/cider-middleware]}
 
-  :profiles {:dev {:dependencies [[binaryage/devtools "0.9.10"]
+  :profiles {:clj-kondo {:dependencies ^:replace [[org.clojure/clojure "1.12.0"]
+                                                 [clj-kondo "2026.08.04"]]}
+
+             :dev {:dependencies [[binaryage/devtools "0.9.10"]
                                   [figwheel-sidecar "0.5.19"]
                                   [cider/piggieback "0.4.1"]
                                   [reagent "1.0.0"]]
