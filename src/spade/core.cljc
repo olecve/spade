@@ -301,6 +301,16 @@
 
          ~(declare-style mode class-name params style-name-fn-name factory-fn-name)))))
 
+(defn- with-docstring
+  "Returns `[class-name params style]` from the arguments of a style macro.
+
+  When the first argument after the name is a string, it is the docstring, and
+  it goes on `class-name` as `:doc`."
+  [class-name [first-arg & more :as args]]
+  (if (string? first-arg)
+    [(vary-meta class-name assoc :doc first-arg) (first more) (rest more)]
+    [class-name (first args) (rest args)]))
+
 #?(:clj
    (defn configure!
      "Sets options for the names Spade generates.
@@ -334,9 +344,14 @@
 
       (defn ship [wing-color]
         [:div {:class (ship-style wing-color)}
-         [:div.wing]])"
-  [class-name params & style]
-  (declare-style-fns :class class-name params style))
+         [:div.wing]])
+
+  Like `defn`, it takes an optional docstring before `params`."
+  {:arglists '([class-name params & style]
+               [class-name docstring params & style])}
+  [class-name & args]
+  (let [[class-name params style] (with-docstring class-name args)]
+    (declare-style-fns :class class-name params style)))
 
 (defmacro defattrs
   "Defines a function named `class-name` that returns an attribute map for a style.
@@ -349,9 +364,14 @@
 
       (defn ship [wing-color]
         [:div (ship-attrs wing-color)
-         [:div.wing]])"
-  [class-name params & style]
-  (declare-style-fns :attrs class-name params style))
+         [:div.wing]])
+
+  Like `defn`, it takes an optional docstring before `params`."
+  {:arglists '([class-name params & style]
+               [class-name docstring params & style])}
+  [class-name & args]
+  (let [[class-name params style] (with-docstring class-name args)]
+    (declare-style-fns :attrs class-name params style)))
 
 (defmacro defglobal
   "Defines a global style named `group-name`.

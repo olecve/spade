@@ -58,6 +58,17 @@ would translate naturally to garden syntax as:
  [:.wing {:background "#777"}]]
 ```
 
+Like `defn`, `defclass` and `defattrs` take an optional docstring before the
+parameters:
+
+```clojure
+(defclass ship-style
+  "Paints the ship and its wings."
+  []
+  {:background "#999"}
+  [:.wing {:background "#777"}])
+```
+
 `defclass` creates a function, which is what that empty vector is for. If you
 wanted to be able to dynamically choose the ship's wing colors, you could write:
 
