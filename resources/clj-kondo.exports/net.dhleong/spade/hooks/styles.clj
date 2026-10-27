@@ -21,8 +21,10 @@
   [node]
   (cond
     (at-rule-call? node)
-    (assoc node :children (cons (api/token-node 'vector)
-                                (map lintable-style (rest (:children node)))))
+    (assoc node :children (->> (:children node)
+                               rest
+                               (map lintable-style)
+                               (cons (api/token-node 'vector))))
 
     (:children node)
     (update node :children #(mapv lintable-style %))
@@ -30,7 +32,7 @@
     :else
     node))
 
-(defn- style-fn
+(defn- style-call->defn
   "Rewrites a style macro call into a `defn` that returns `return-node`."
   [{:keys [node]} return-node]
   (let [[_ name-node params-node & style] (:children node)]
@@ -40,7 +42,9 @@
                (api/list-node
                 [(api/token-node 'let)
                  (api/vector-node [(api/token-node '_style)
-                                   (api/vector-node (mapv lintable-style style))])
+                                   (->> style
+                                        (mapv lintable-style)
+                                        api/vector-node)])
                  return-node])])
              (meta node))}))
 
@@ -48,16 +52,16 @@
 (defn defclass
   "Lints `spade.core/defclass` as a function that returns a class name."
   [hook-input]
-  (style-fn hook-input (api/string-node "")))
+  (style-call->defn hook-input (api/string-node "")))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn defattrs
   "Lints `spade.core/defattrs` as a function that returns an attribute map."
   [hook-input]
-  (style-fn hook-input (api/map-node [(api/keyword-node :class) (api/string-node "")])))
+  (style-call->defn hook-input (api/map-node [(api/keyword-node :class) (api/string-node "")])))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn defkeyframes
   "Lints `spade.core/defkeyframes` as a function that returns an animation name."
   [hook-input]
-  (style-fn hook-input (api/string-node "")))
+  (style-call->defn hook-input (api/string-node "")))
