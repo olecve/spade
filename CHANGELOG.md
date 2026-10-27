@@ -8,6 +8,10 @@ can be ported to [dhleong/spade](https://github.com/dhleong/spade) on its own.
 
 ### Added
 
+- `defclass` and `defattrs` take an optional docstring before the params, like
+  `defn`. It goes on the var as `:doc`, and the exported clj-kondo config lints
+  it as a docstring. Before, a docstring failed when the macro expanded.
+  ([#12](https://github.com/olecve/spade/pull/12), not sent upstream yet)
 - `spade.core/configure!` with `{:class-prefix "ui_"}` sets a prefix for every
   class name and animation name Spade generates. It keeps the short names of an `:advanced`
   build from colliding with other CSS on the same page. Call it before the first
