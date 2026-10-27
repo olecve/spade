@@ -1,6 +1,20 @@
 (ns ^:no-doc spade.util
   (:require [clojure.string :as str]))
 
+(defonce ^:private factory-names (atom #{}))
+
+(defn- unique-factory-name
+  "Returns `factory-name`, or a suffixed variant if another factory has it.
+
+  Different factories can get the same name. Under :advanced optimizations,
+  names local to a closure are minified per scope. On the JVM, the name has
+  no namespace."
+  [factory-name]
+  (let [[used] (swap-vals! factory-names conj factory-name)]
+    (if (contains? used factory-name)
+      (str factory-name "-" (gensym "SPD"))
+      factory-name)))
+
 (defn factory->name
   "Given a style factory function, return an appropriate name for its
    style. This function assumes it will be called *once* for any given
@@ -20,7 +34,8 @@
       (-> given-name
           (str/replace #"[_-]factory\$" "")
           (str/replace #"[_$]" "-")
-          (str/replace #"^-" "_")))))
+          (str/replace #"^-" "_")
+          unique-factory-name))))
 
 (defn sanitize [s]
   (-> s
