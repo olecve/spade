@@ -4,15 +4,13 @@
 
 > [!NOTE]
 > This is the `stable/2.0.x` branch of [olecve/spade][fork], a fork of
-> [dhleong/spade][upstream]. It is spade 2.0.0 plus fixes that are not yet
-> released upstream. It is published as `org.clojars.olecve/spade` with
-> versions like `2.0.0-1`.
+> [dhleong/spade][upstream]. It starts from the spade 2.0.0 release.
 >
 > - `main` mirrors upstream `main` without changes.
-> - Each fix is sent upstream as a separate pull request and is cherry-picked
+> - Fixes will be sent upstream as separate pull requests and cherry-picked
 >   onto this branch.
 >
-> Use `net.dhleong/spade` unless you need one of these fixes.
+> Nothing from this fork is published yet. Use `net.dhleong/spade`.
 
 [fork]: https://github.com/olecve/spade
 [upstream]: https://github.com/dhleong/spade
