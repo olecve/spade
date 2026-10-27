@@ -3,6 +3,9 @@
 
 (defonce ^:private factory-names (atom #{}))
 
+; different factories can get the same name: under :advanced
+; optimizations, names local to a closure are minified per scope,
+; and on the JVM the name has no namespace
 (defn- unique-factory-name [factory-name]
   (let [[used] (swap-vals! factory-names conj factory-name)]
     (if (contains? used factory-name)
@@ -24,12 +27,7 @@
 
       ; normal case: base the style name on the factory function's name.
       ; this lets us have descriptive names in dev, and concise names in
-      ; prod, without having to embed anything extra in the file.
-      ; under :advanced optimizations, a factory can end up local to a
-      ; closure, and local names are minified separately in each scope,
-      ; so two different factories can have the same name. on the JVM,
-      ; the name has no namespace. so we make sure each factory still
-      ; gets its own name
+      ; prod, without having to embed anything extra in the file
       (unique-factory-name
         (-> given-name
             (str/replace #"[_-]factory\$" "")
