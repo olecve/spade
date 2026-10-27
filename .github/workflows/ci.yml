@@ -35,6 +35,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2-
 
+      - name: Format
+        run: lein cljfmt check
+
       - name: Test
         run: lein test
 
