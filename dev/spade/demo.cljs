@@ -21,7 +21,7 @@
 
 (defclass serenity []
   (at-media {:min-width "750px"}
-    {:padding "80px"})
+            {:padding "80px"})
   {:padding "8px"}
 
   [:.title {:font-size :*my-var*
@@ -83,12 +83,11 @@
 
 (defn mount-root []
   (rdom/render
-    [spade/with-dom #(.getElementById js/document "styles")
-     [view]]
-    (.getElementById js/document "app")))
+   [spade/with-dom #(.getElementById js/document "styles")
+    [view]]
+   (.getElementById js/document "app")))
 
-(defn init!  []
+(defn init! []
   (mount-root))
 
 (init!)
-

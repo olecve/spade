@@ -18,8 +18,8 @@
 ;; to also check the react context
 (set! *style-container*
       (->AlternateStyleContainer
-        provided-container
-        *style-container*))
+       provided-container
+       *style-container*))
 
 (defn with-style-container
   "Uses the provided IStyleContainer to render the styles of the children

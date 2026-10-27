@@ -21,4 +21,3 @@
           second-name (factory->name #js {:name "sameName"})]
       (is (= "sameName" first-name))
       (is (not= first-name second-name)))))
-
