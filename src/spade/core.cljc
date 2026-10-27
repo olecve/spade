@@ -103,11 +103,9 @@
     [nil style]))
 
 (defn- with-composition [composition name-var key-var style-var]
-  (let [base (cond->
-              {:css `(when ~name-var
-                       (spade.runtime/compile-css ~style-var))
-               :name name-var}
-
+  (let [base (cond-> {:css `(when ~name-var
+                              (spade.runtime/compile-css ~style-var))
+                      :name name-var}
                key-var (assoc ::key key-var))]
     (if composition
       (assoc base :composes composition)
@@ -169,14 +167,12 @@
   (let [style (->> style prefix-at-media rename-vars)
         [base-style-var name-var key-var style-naming-let] (build-style-naming-let
                                                             style params style-name-var)
-        info-map (cond->
-                  `{:css (when ~name-var
-                           (spade.runtime/compile-css
-                            (garden.stylesheet/at-keyframes
-                             ~name-var
-                             ~(or base-style-var (vec style)))))
-                    :name ~name-var}
-
+        info-map (cond-> `{:css (when ~name-var
+                                  (spade.runtime/compile-css
+                                   (garden.stylesheet/at-keyframes
+                                    ~name-var
+                                    ~(or base-style-var (vec style)))))
+                           :name ~name-var}
                    key-var (assoc ::key key-var))]
 
     ; this (let) might get compiled out in advanced mode anyway, but
