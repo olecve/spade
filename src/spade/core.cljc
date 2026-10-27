@@ -91,25 +91,16 @@
        element))
    style))
 
-(defn- extract-composes [style]
-  (if-let [composes (when (map? (first style))
-                      (:composes (first style)))]
-    [composes
-
-     (-> style
-         vec
-         (update 0 dissoc :composes))]
-
-    [nil style]))
-
-(defn- with-composition [composition name-var key-var style-var]
-  (let [base (cond-> {:css `(when ~name-var
-                              (spade.runtime/compile-css ~style-var))
+(defn- with-composition [name-var key-var style-var]
+  (let [composes-var (gensym "composes")
+        css-style-var (gensym "css-style")
+        base (cond-> {:css `(when ~name-var
+                              (spade.runtime/compile-css ~css-style-var))
                       :name name-var}
                key-var (assoc ::key key-var))]
-    (if composition
-      (assoc base :composes composition)
-      base)))
+    `(let [[~composes-var ~css-style-var] (spade.runtime/extract-composes ~style-var)]
+       (cond-> ~base
+         ~composes-var (assoc :composes ~composes-var)))))
 
 (defn- build-style-naming-let
   [style params name-var]
@@ -151,8 +142,7 @@
    style))
 
 (defn- transform-named-style [style params style-name-var]
-  (let [[composition style] (extract-composes style)
-        style-var (gensym "style")
+  (let [style-var (gensym "style")
         style (->> style prefix-at-media rename-vars)
         [base-style-var name-var key-var style-naming-let] (build-style-naming-let
                                                             style params style-name-var)
@@ -161,7 +151,7 @@
                      (into [`(str "." ~name-var)] style))]
     `(let ~(vec (concat style-naming-let
                         [style-var style-decl]))
-       ~(with-composition composition name-var key-var style-var))))
+       ~(with-composition name-var key-var style-var))))
 
 (defn- transform-keyframes-style [style params style-name-var]
   (let [style (->> style prefix-at-media rename-vars)

@@ -17,6 +17,18 @@
 (defn ->css-var [n]
   (->CSSFunction "var" n))
 
+(defn extract-composes
+  "Returns the `:composes` of the top-level maps in `style`, and `style` without them.
+
+  The composes value is nil when no map has `:composes`. When more than one map
+  has it, the values are joined in order."
+  [style]
+  (let [composes (keep #(when (map? %) (:composes %)) style)]
+    [(if (next composes)
+       (into [] (mapcat #(if (sequential? %) % [%])) composes)
+       (first composes))
+     (mapv #(if (map? %) (dissoc % :composes) %) style)]))
+
 (defn compile-css [elements]
   (garden/css *css-compile-flags* elements))
 
