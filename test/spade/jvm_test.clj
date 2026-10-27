@@ -50,3 +50,21 @@
       (is (= "red-class composes-from-call" style-name))
       (is (= ".composes-from-call{background:blue}"
              (get @styles "composes-from-call"))))))
+
+(defclass documented-class
+  "Colors the text green."
+  []
+  {:color "green"})
+
+(deftest docstring-test
+  (testing "Keep the docstring of a defclass"
+    (is (= "Colors the text green."
+           (:doc (meta #'documented-class)))))
+
+  (testing "Build the class of a defclass with a docstring"
+    (let [styles (atom nil)
+          container (atom-container/create-container styles)
+          style-name (with-styles-container container
+                       (documented-class))]
+      (is (= ".documented-class{color:green}"
+             (get @styles style-name))))))

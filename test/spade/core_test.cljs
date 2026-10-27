@@ -322,6 +322,33 @@
       (finally
         (spade/configure! {:class-prefix ""})))))
 
+(defclass documented-class
+  "Colors the text."
+  [color]
+  {:color color})
+
+(defattrs documented-attrs
+  "Colors the text red."
+  []
+  {:color "red"})
+
+(deftest docstring-test
+  (testing "Keep the docstring of a defclass"
+    (is (= "Colors the text."
+           (:doc (meta #'documented-class)))))
+
+  (testing "Build the class name of a defclass with a docstring"
+    (is (= (str "spade-core-test-documented-class_" (hash ["red"]))
+           (documented-class "red"))))
+
+  (testing "Keep the docstring of a defattrs"
+    (is (= "Colors the text red."
+           (:doc (meta #'documented-attrs)))))
+
+  (testing "Build the attributes of a defattrs with a docstring"
+    (is (= {:class "spade-core-test-documented-attrs"}
+           (documented-attrs)))))
+
 (defclass destructured [{:keys [c b]}]
   ^{:key (str c "_" b)}
   {:color c
