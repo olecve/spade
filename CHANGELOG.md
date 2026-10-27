@@ -14,6 +14,12 @@ can be ported to [dhleong/spade](https://github.com/dhleong/spade) on its own.
 
 ### Fixed
 
+- `:composes` works in any map at the top level of a style, also in a map that
+  comes from a var or a function call. Before, Spade read it only from the first
+  form, and only when that form was a map written in the style. A style that
+  started with a shared map, for example `(defclass x [] shared {:composes
+  [(base)] ...})`, silently dropped the composition.
+  ([#9](https://github.com/olecve/spade/pull/9), not sent upstream yet)
 - Two style factories with the same name no longer share one class name.
   Under `:advanced` optimizations, names local to a closure are minified per
   scope, so two factories could both get the class `a` and one style

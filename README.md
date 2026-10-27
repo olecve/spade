@@ -124,8 +124,20 @@ Spade supports composing styles just like css-modules:
    :background "#111"})
 ```
 
-The `:composes` key is only supported on the root element of a style. It supports
-either a single style name or a collection of style names, as shown above.
+The `:composes` key works in any map at the top level of a style, including a map
+that comes from a var or a function call, so a shared map can come first. Its value is
+a single style name or a collection of style names, as shown above. When more than one
+map has `:composes`, Spade composes all of them, in order.
+
+```clojure
+(def shared-ship-size
+  {:min-height "24px"})
+
+(defclass cloaked-ship []
+  shared-ship-size
+  {:composes [(ship-style "#111")]
+   :background "#111"})
+```
 
 ### Media queries
 
