@@ -4,8 +4,7 @@
            ; actually be referenced anywhere (because it's, y'know, global).
            ; So we automatically ignore its public vars by default
            :clojure-lsp/unused-public-var {:exclude-when-defined-by #{spade.core/defglobal}}}
- :hooks {:expand-macro {spade.core/defglobal hooks.defglobal/as-macro}
-         :analyze-call {spade.core/defattrs hooks.styles/defattrs
+ :hooks {:analyze-call {spade.core/defattrs hooks.styles/defattrs
                         spade.core/defclass hooks.styles/defclass
                         spade.core/defkeyframes hooks.styles/defkeyframes}}
  :lint-as {spade.core/defglobal clojure.core/def}}
