@@ -1,6 +1,6 @@
-(defproject net.dhleong/spade "2.0.0-SNAPSHOT"
+(defproject org.clojars.olecve/spade "2.0.0-1-SNAPSHOT"
   :description "A nice tool to use in the Garden"
-  :url "https://github.com/dhleong/spade"
+  :url "https://github.com/olecve/spade"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
@@ -19,9 +19,8 @@
   :source-paths ["src"]
   :test-paths ["test"]
 
-  :deploy-repositories [["clojars-ci" {:url "https://repo.clojars.org"
-                                       :username :env/clojars_username
-                                       :password :env/clojars_password}]]
+  :deploy-repositories [["releases" :clojars]
+                        ["snapshots" :clojars]]
 
   :jar-exclusions [#"(?:^|\/)public\/"]
 

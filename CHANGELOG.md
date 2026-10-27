@@ -6,6 +6,12 @@ can be ported to [dhleong/spade](https://github.com/dhleong/spade) on its own.
 
 ## Unreleased
 
+### Changed
+
+- Published to Clojars as `org.clojars.olecve/spade` instead of
+  `net.dhleong/spade`. ([#6](https://github.com/olecve/spade/pull/6), fork
+  only)
+
 ### Fixed
 
 - Two style factories with the same name no longer share one class name.
