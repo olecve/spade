@@ -20,10 +20,6 @@ jobs:
         with:
           node-version: 22
 
-      - uses: DeLaGuardo/setup-clj-kondo@master
-        with:
-          version: "2026.05.25"
-
       - uses: DeLaGuardo/setup-clojure@master
         with:
           lein: latest
@@ -40,8 +36,37 @@ jobs:
 
       - name: Lint
         if: ${{ !cancelled() }}
-        run: clj-kondo --lint src test --config .clj-kondo/config.edn
+        run: lein clj-kondo
 
       - name: Format
         if: ${{ !cancelled() }}
         run: lein cljfmt check
+
+  cljs-patrol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve cljs-patrol version
+        id: cljs-patrol-version
+        run: echo "version=$(cat .cljs-patrol-version)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache cljs-patrol binary
+        id: cache-cljs-patrol
+        uses: actions/cache@v4
+        with:
+          path: .cache/cljs-patrol
+          key: cljs-patrol-v${{ steps.cljs-patrol-version.outputs.version }}-linux-x86_64
+
+      - name: Download cljs-patrol binary
+        if: steps.cache-cljs-patrol.outputs.cache-hit != 'true'
+        env:
+          CLJS_PATROL_VERSION: ${{ steps.cljs-patrol-version.outputs.version }}
+        run: |
+          mkdir -p .cache
+          curl -sL "https://github.com/olecve/cljs-patrol/releases/download/v${CLJS_PATROL_VERSION}/cljs-patrol-${CLJS_PATROL_VERSION}-linux-x86_64" \
+            -o .cache/cljs-patrol
+          chmod +x .cache/cljs-patrol
+
+      - name: Run cljs-patrol
+        run: ./.cache/cljs-patrol --only docstrings,tests,layout,idioms --experimental-clj --fail-on all src test
