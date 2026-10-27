@@ -14,6 +14,7 @@
          composes-after-shared-map-factory$
          composes-in-two-maps-factory$
          composes-from-var-factory$
+         composes-from-var-and-map-factory$
          parameterized-key-frames-factory$)
 
 (defclass computed-key [color]
@@ -271,6 +272,11 @@
   shared-with-composes
   {:color "red"})
 
+(defclass composes-from-var-and-map []
+  shared-with-composes
+  {:composes [(params "blue")]
+   :background "blue"})
+
 (deftest composes-from-a-var-test
   (testing "compose from a map that comes from a var"
     (is (= [(str "spade-core-test-params_" (hash ["red"]))
@@ -279,7 +285,17 @@
 
     (let [generated (:css (composes-from-var-factory$ "" []))]
       (is (false? (str/includes? generated "composes:")))
-      (is (true? (str/includes? generated "color:"))))))
+      (is (true? (str/includes? generated "color:")))))
+
+  (testing "compose from a var and a map written in the style, in order"
+    (is (= [(str "spade-core-test-params_" (hash ["red"]))
+            (str "spade-core-test-params_" (hash ["blue"]))
+            "spade-core-test-composes-from-var-and-map"]
+           (str/split (composes-from-var-and-map) #" ")))
+
+    (let [generated (:css (composes-from-var-and-map-factory$ "" []))]
+      (is (false? (str/includes? generated "composes:")))
+      (is (true? (str/includes? generated "background:"))))))
 
 (defclass destructured [{:keys [c b]}]
   ^{:key (str c "_" b)}
