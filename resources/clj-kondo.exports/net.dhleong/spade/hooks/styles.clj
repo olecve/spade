@@ -33,19 +33,28 @@
     node))
 
 (defn- style-call->defn
-  "Rewrites a style macro call into a `defn` that returns `return-node`."
+  "Rewrites a style macro call into a `defn` that returns `return-node`.
+
+  A docstring after the name stays the docstring of the `defn`."
   [{:keys [node]} return-node]
-  (let [[_ name-node params-node & style] (:children node)]
+  (let [[_ name-node & args] (:children node)
+        [docstring-node params-node & style] (if (api/string-node? (first args))
+                                               args
+                                               (cons nil args))]
     {:node (with-meta
              (api/list-node
-              [(api/token-node 'defn) name-node params-node
-               (api/list-node
-                [(api/token-node 'let)
-                 (api/vector-node [(api/token-node '_style)
-                                   (->> style
-                                        (mapv lintable-style)
-                                        api/vector-node)])
-                 return-node])])
+              (concat
+               [(api/token-node 'defn) name-node]
+               (when docstring-node
+                 [docstring-node])
+               [params-node
+                (api/list-node
+                 [(api/token-node 'let)
+                  (api/vector-node [(api/token-node '_style)
+                                    (->> style
+                                         (mapv lintable-style)
+                                         api/vector-node)])
+                  return-node])]))
              (meta node))}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
